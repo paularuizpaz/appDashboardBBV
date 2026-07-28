@@ -15,22 +15,12 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Download Android Command Line Tools
+    - name: Force Gradle 7.5 Wrapper
       run: |
-        mkdir -p $HOME/android-sdk/cmdline-tools
-        wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O tools.zip
-        unzip -q tools.zip -d $HOME/android-sdk/cmdline-tools
-        mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
-        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses
-        $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+        gradle wrapper --gradle-version 7.5
 
-    - name: Build with Gradle
-      env:
-        ANDROID_HOME: /home/runner/android-sdk
-      run: |
-        gradle wrapper
-        chmod +x gradlew
-        ./gradlew assembleDebug
+    - name: Build Debug APK
+      run: ./gradlew assembleDebug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
