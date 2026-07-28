@@ -1,4 +1,3 @@
-Kotlin
 package com.example.powerbiembed
 
 import android.annotation.SuppressLint
