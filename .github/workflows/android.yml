@@ -15,12 +15,10 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Force Gradle 7.5 Wrapper
+    - name: Build with Gradle Direct
       run: |
-        gradle wrapper --gradle-version 7.5
-
-    - name: Build Debug APK
-      run: ./gradlew assembleDebug
+        chmod +x gradlew
+        ./gradlew assembleDebug --no-daemon
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
