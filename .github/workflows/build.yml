@@ -15,21 +15,21 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
+    - name: Set up Gradle 8.0
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: '8.0'
+
     - name: Configure AndroidX and Missing Resources
       run: |
         echo "android.useAndroidX=true" > gradle.properties
         echo "android.enableJetifier=true" >> gradle.properties
-        
-        # Crear carpetas mipmap y un icono temporal válido para evitar el error del Manifest
         mkdir -p app/src/main/res/mipmap-hdpi
-        convert -size 72x72 xc:blue app/src/main/res/mipmap-hdpi/ic_launcher.png || touch app/src/main/res/mipmap-hdpi/ic_launcher.png
+        touch app/src/main/res/mipmap-hdpi/ic_launcher.png
         touch app/src/main/res/mipmap-hdpi/ic_launcher_round.png
 
-    - name: Generate Gradle Wrapper and Build APK
-      run: |
-        gradle wrapper --gradle-version 8.0
-        chmod +x gradlew
-        ./gradlew assembleDebug --no-daemon
+    - name: Build Debug APK
+      run: gradle assembleDebug --no-daemon
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
