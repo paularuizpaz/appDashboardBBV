@@ -22,7 +22,7 @@ jobs:
         cache-read-only: true
         cache-write-only: false
 
-    - name: Configure AndroidX and Resources
+    - name: Configure AndroidX, Resources and Java 17 Compatibility
       run: |
         echo "android.useAndroidX=true" > gradle.properties
         echo "android.enableJetifier=true" >> gradle.properties
@@ -30,6 +30,14 @@ jobs:
         mkdir -p app/src/main/res/mipmap-hdpi
         touch app/src/main/res/mipmap-hdpi/ic_launcher.png
         touch app/src/main/res/mipmap-hdpi/ic_launcher_round.png
+
+        # Inyectar la configuración de Java 17 en el build.gradle de la app para alinear Java y Kotlin
+        BUILD_GRADLE="app/build.gradle"
+        if [ -f "$BUILD_GRADLE" ]; then
+          if ! grep -q "compileOptions" "$BUILD_GRADLE"; then
+            sed -i '/android {/a \    compileOptions {\n        sourceCompatibility JavaVersion.VERSION_17\n        targetCompatibility JavaVersion.VERSION_17\n    }\n    kotlinOptions {\n        jvmTarget = "17"\n    }' "$BUILD_GRADLE"
+          fi
+        fi
 
     - name: Build Debug APK
       run: gradle assembleDebug --no-daemon
