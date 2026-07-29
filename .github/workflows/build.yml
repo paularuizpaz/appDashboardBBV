@@ -41,7 +41,6 @@ jobs:
           fi
         fi
     - name: Build Debug APK
-      working-directory: ./appDashboardBBV
       run: |
         chmod +x gradlew
         ./gradlew assembleDebug --no-daemon
